@@ -26,16 +26,6 @@ STATUS_MAP = {
     "review": "to do"  # Default to 'to do' as a safe fallback for review status
 }
 
-# 3. Assignee Map (Static mapping to user ID)
-# Maps names to the ClickUp User ID of the workspace owner.
-# If the AI identifies "Bhavy", "Bhavy Modi", or initials "BM", 
-# the task is assigned to your profile ID (302516285).
-ASSIGNEE_MAP = {
-    "bhavy": 302516285,
-    "bhavy modi": 302516285,
-    "bm": 302516285
-}
-
 async def create_task(task_fields: dict) -> dict:
     """
     Creates a new ClickUp task under the configured List ID.
@@ -46,7 +36,6 @@ async def create_task(task_fields: dict) -> dict:
         - description
         - status
         - priority
-        - assignee
         
     Returns:
       dict: Summary of the created task including the ClickUp web URL.
@@ -69,23 +58,12 @@ async def create_task(task_fields: dict) -> dict:
     extracted_priority = task_fields.get("priority", "Normal").lower().strip()
     priority = PRIORITY_MAP.get(extracted_priority, 3)
     
-    # 3. Resolve assignee name to ClickUp User ID
-    extracted_assignee = task_fields.get("assignee", "").lower().strip()
-    assignee_id = ASSIGNEE_MAP.get(extracted_assignee)
-    assignees = [assignee_id] if assignee_id else []
-    
-    # If the user requested an assignee that isn't mapped, append it to the description
-    description = task_fields.get("description", "")
-    if extracted_assignee and not assignee_id:
-        description += f"\n\n[Assignee requested: {task_fields.get('assignee')}]"
-        
-    # Build the HTTP request body payload
+    # Build the HTTP request body payload (excluding assignee fields)
     payload = {
         "name": task_fields.get("task_name"),
-        "description": description,
+        "description": task_fields.get("description", ""),
         "status": status,
-        "priority": priority,
-        "assignees": assignees
+        "priority": priority
     }
     
     # ClickUp v2 Create Task API URL
@@ -103,6 +81,5 @@ async def create_task(task_fields: dict) -> dict:
         "name": data.get("name"),
         "status": status,
         "priority": task_fields.get("priority"),
-        "assignee": "Bhavy Modi" if assignee_id else (task_fields.get("assignee") if task_fields.get("assignee") else "None"),
         "url": data.get("url")
     }

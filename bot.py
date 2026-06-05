@@ -68,8 +68,7 @@ async def cmd_start(client: Client, message: Message) -> None:
         "• **Task Name**\n"
         "• **Description**\n"
         "• **Status** (must be: Open, In Progress, Done, or Review)\n"
-        "• **Priority** (must be: Low, Normal, High, or Urgent)\n"
-        "• **Assignee**\n\n"
+        "• **Priority** (must be: Low, Normal, High, or Urgent)\n\n"
         "🚫 **Note:** Images, videos, files, and documents are not supported."
     )
     await message.reply_text(welcome_text)
@@ -132,8 +131,7 @@ async def handle_text(client: Client, message: Message) -> None:
             "- task_name (string)\n"
             "- description (string)\n"
             "- status (must be one of: Open, In Progress, Done, Review)\n"
-            "- priority (must be one of: Low, Normal, High, Urgent)\n"
-            "- assignee (string)\n\n"
+            "- priority (must be one of: Low, Normal, High, Urgent)\n\n"
             "If any field cannot be found, set its value to null.\n"
             f"User message: {message.text}"
         )
@@ -160,8 +158,7 @@ async def handle_text(client: Client, message: Message) -> None:
             fields.get("task_name") and
             fields.get("description") and
             fields.get("status") in allowed_statuses and
-            fields.get("priority") in allowed_priorities and
-            fields.get("assignee")
+            fields.get("priority") in allowed_priorities
         )
         
         if not is_valid:
@@ -172,8 +169,7 @@ async def handle_text(client: Client, message: Message) -> None:
                 "Task Name: <Name of the task>\n"
                 "Description: <Detailed description>\n"
                 "Status: <Open, In Progress, Done, or Review>\n"
-                "Priority: <Low, Normal, High, or Urgent>\n"
-                "Assignee: <Name of the person>"
+                "Priority: <Low, Normal, High, or Urgent>"
             )
             await message.reply_text(error_msg)
             return
@@ -186,8 +182,7 @@ async def handle_text(client: Client, message: Message) -> None:
             f"🚀 **Task Created Successfully!**\n\n"
             f"📝 **Task Name:** {task['name']}\n"
             f"📋 **Status:** {task['status']}\n"
-            f"⚠️ **Priority:** {task['priority']}\n"
-            f"👤 **Assignee:** {task['assignee']}\n\n"
+            f"⚠️ **Priority:** {task['priority']}\n\n"
             f"🔗 [View on ClickUp]({task['url']})"
         )
         await message.reply_text(reply_text)
@@ -205,8 +200,7 @@ async def handle_text(client: Client, message: Message) -> None:
             "Task Name: <Name of the task>\n"
             "Description: <Detailed description>\n"
             "Status: <Open, In Progress, Done, or Review>\n"
-            "Priority: <Low, Normal, High, or Urgent>\n"
-            "Assignee: <Name of the person>"
+            "Priority: <Low, Normal, High, or Urgent>"
         )
         await message.reply_text(error_msg)
 
