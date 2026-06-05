@@ -126,6 +126,7 @@ async def handle_text(client: Client, message: Message) -> None:
     processing_msg = await message.reply_text("⏳ Processing your task request...")
     try:
         # Define instruction prompt asking Gemini to extract fields in JSON format
+        # Added explicit instruction to handle line-separated values without labels.
         prompt = (
             "Extract task fields from the user message. Your response must be a valid JSON object only. "
             "Do not include markdown format or backticks. Valid fields are:\n"
@@ -134,6 +135,13 @@ async def handle_text(client: Client, message: Message) -> None:
             "- status (must be one of: Open, In Progress, Done, Review)\n"
             "- priority (must be one of: Low, Normal, High, Urgent)\n"
             "- assignee (string)\n\n"
+            "Note: The user message may or may not contain labels (like 'Task Name:'). "
+            "If the message is simply a list of values on separate lines, extract them in this order:\n"
+            "1. task_name\n"
+            "2. description\n"
+            "3. status\n"
+            "4. priority\n"
+            "5. assignee\n\n"
             "If any field cannot be found, set its value to null.\n"
             f"User message: {message.text}"
         )
@@ -155,6 +163,12 @@ async def handle_text(client: Client, message: Message) -> None:
         allowed_statuses = {"Open", "In Progress", "Done", "Review"}
         allowed_priorities = {"Low", "Normal", "High", "Urgent"}
         
+        # Standardize extracted status and priority fields (convert to title case, e.g. "open" -> "Open")
+        if fields.get("status"):
+            fields["status"] = str(fields["status"]).strip().title()
+        if fields.get("priority"):
+            fields["priority"] = str(fields["priority"]).strip().title()
+            
         # Check validity
         is_valid = (
             fields.get("task_name") and
@@ -177,6 +191,7 @@ async def handle_text(client: Client, message: Message) -> None:
             )
             await message.reply_text(error_msg)
             return
+
             
         # Call the ClickUp service to create the task
         task = await clickup.create_task(fields)
