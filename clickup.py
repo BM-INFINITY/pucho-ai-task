@@ -36,6 +36,7 @@ async def create_task(task_fields: dict) -> dict:
         - description
         - status
         - priority
+        - assignee
         
     Returns:
       dict: Summary of the created task including the ClickUp web URL.
@@ -58,10 +59,16 @@ async def create_task(task_fields: dict) -> dict:
     extracted_priority = task_fields.get("priority", "Normal").lower().strip()
     priority = PRIORITY_MAP.get(extracted_priority, 3)
     
-    # Build the HTTP request body payload (excluding assignee fields)
+    # Append the requested assignee to the task description instead of assigning a ClickUp user profile ID
+    description = task_fields.get("description", "")
+    extracted_assignee = task_fields.get("assignee", "").strip()
+    if extracted_assignee:
+        description += f"\n\n[Assignee: {extracted_assignee}]"
+        
+    # Build the HTTP request body payload
     payload = {
         "name": task_fields.get("task_name"),
-        "description": task_fields.get("description", ""),
+        "description": description,
         "status": status,
         "priority": priority
     }
@@ -81,5 +88,6 @@ async def create_task(task_fields: dict) -> dict:
         "name": data.get("name"),
         "status": status,
         "priority": task_fields.get("priority"),
+        "assignee": extracted_assignee if extracted_assignee else "None",
         "url": data.get("url")
     }
