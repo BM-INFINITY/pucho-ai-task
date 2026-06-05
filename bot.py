@@ -33,7 +33,7 @@ genai_client = genai.Client(api_key=api_key, http_options={"api_version": "v1bet
 
 async def cmd_start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """
-    Handles the /start and /help command triggers.
+    Handles the /start command trigger.
     Sends a comprehensive, single-message welcome guide explaining all bot features,
     voice note Q&A instructions, task creation layouts, and format requirements.
     """
@@ -61,12 +61,6 @@ async def cmd_start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     # Send the response using Markdown parsing for bold text and formatting
     await update.message.reply_text(welcome_text, parse_mode="Markdown")
 
-async def cmd_help(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    """
-    Handles the /help command. Redirects directly to the consolidated start guide
-    so all information is provided in one single interface message.
-    """
-    await cmd_start(update, context)
 
 # =====================================================================
 # MESSAGE EVENT HANDLERS
@@ -233,7 +227,6 @@ def main() -> None:
     
     # Register command and message event handlers in priority order
     app.add_handler(CommandHandler("start", cmd_start))
-    app.add_handler(CommandHandler("help", cmd_help))
     app.add_handler(MessageHandler(filters.VOICE, handle_voice))
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_text))
     
