@@ -14,7 +14,7 @@ def transcribe_audio(file_path: str) -> str:
     """
     # Load API token and model directly from environment variables
     api_key = os.getenv("GEMINI_API_KEY")
-    model = os.getenv("GEMINI_MODEL", "gemini-2.5-flash")
+    model = os.getenv("GEMINI_MODEL", "gemini-2.0-flash")
     
     # Initialize the Google GenAI SDK Client using the v1beta API version
     # (v1beta supports sending raw audio bytes directly inside the request)
