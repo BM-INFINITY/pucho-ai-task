@@ -44,7 +44,7 @@ app = Client(
 
 # Initialize the Google Gemini API Client
 gemini_api_key = os.getenv("GEMINI_API_KEY")
-gemini_model = os.getenv("GEMINI_MODEL", "gemini-2.0-flash")
+gemini_model = os.getenv("GEMINI_MODEL", "gemini-3.1-flash-lite")
 genai_client = genai.Client(api_key=gemini_api_key, http_options={"api_version": "v1beta"})
 
 # =====================================================================
