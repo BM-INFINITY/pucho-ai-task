@@ -1,4 +1,4 @@
-# Pucho AI — Telegram Bot (AI Automation Internship Assessment)
+# Pucho AI - Telegram Bot (AI Automation Internship Assessment)
 
 This is my submission for the AI Automation Internship Assessment. The task was to build a Telegram bot that handles voice queries using AI and creates tasks in ClickUp from text messages.
 
@@ -8,19 +8,19 @@ This is my submission for the AI Automation Internship Assessment. The task was 
 
 There are three things this bot can handle:
 
-1. **Voice messages** — You send a voice note, it transcribes it using Gemini and replies with an answer.
-2. **Task messages** — You send task details in text, it extracts the fields, validates them, and creates a task in ClickUp.
-3. **Everything else** — Photos, videos, files, stickers — it just tells you it doesn't support those.
+1. **Voice messages** - You send a voice note, it transcribes it using Gemini and replies with an answer.
+2. **Task messages** - You send task details in text, it extracts the fields, validates them, and creates a task in ClickUp.
+3. **Everything else** - Photos, videos, files, stickers - it just tells you it doesn't support those.
 
 ---
 
 ## Tech stack
 
-- **Python** — main language
-- **Pyrogram** — for connecting to Telegram (MTProto, not the Bot API wrapper)
-- **google-genai** — Gemini API for both transcription and text generation
-- **httpx** — async HTTP client for ClickUp API calls
-- **python-dotenv** — loads the `.env` config
+- **Python** - main language
+- **Pyrogram** - for connecting to Telegram (MTProto, not the Bot API wrapper)
+- **google-genai** - Gemini API for both transcription and text generation
+- **httpx** - async HTTP client for ClickUp API calls
+- **python-dotenv** - loads the `.env` config
 
 
 ---
@@ -29,7 +29,7 @@ There are three things this bot can handle:
 
 ```
 pucho-telegram-bot/
-├── bot.py           # All Pyrogram handlers — start command, voice, text, unsupported
+├── bot.py           # All Pyrogram handlers - start command, voice, text, unsupported
 ├── speech.py        # Sends OGG audio bytes to Gemini and returns transcription
 ├── clickup.py       # Builds payload and calls ClickUp v2 API to create the task
 ├── requirements.txt
@@ -55,7 +55,7 @@ pucho-telegram-bot/
 
 1. User sends task details as plain text
 2. Bot sends the message to Gemini with a prompt asking for JSON output containing: `task_name`, `description`, `status`, `priority`, `assignee`
-3. The JSON is parsed and validated — status must be one of `Open, In Progress, Done, Review` and priority must be one of `Low, Normal, High, Urgent`
+3. The JSON is parsed and validated - status must be one of `Open, In Progress, Done, Review` and priority must be one of `Low, Normal, High, Urgent`
 4. If anything is missing or wrong → error message with the correct format shown
 5. If valid → `clickup.py` maps the values (e.g., `"Urgent"` → `1`, `"Open"` → `"to do"`) and creates the task via `POST /api/v2/list/{list_id}/task`
 6. Bot replies with task name, status, priority, assignee name, and a direct ClickUp link
@@ -123,7 +123,7 @@ Assignee: Rahul Shah
 ```
 Bot replies with task details and a ClickUp link.
 
-The bot also accepts the same info without labels — just values on separate lines, in that order.
+The bot also accepts the same info without labels - just values on separate lines, in that order.
 
 **Invalid task (missing fields):**
 ```
@@ -146,22 +146,22 @@ Assignee: <Name of the person>
 
 ## A few things worth noting
 
-**Assignee handling** — ClickUp's API requires a numeric user ID to assign tasks. Since I don't have a user directory to look up IDs from, the assignee name is appended to the task description as `[Assignee: Name]`. It's a workaround but it works within the scope of this project.
+**Assignee handling** - ClickUp's API requires a numeric user ID to assign tasks. Since I don't have a user directory to look up IDs from, the assignee name is appended to the task description as `[Assignee: Name]`. It's a workaround but it works within the scope of this project.
 
-**JSON cleanup** — Gemini sometimes wraps the JSON in markdown code fences (` ```json ``` `). There's a regex step that strips those out before parsing, to avoid `json.loads` failures.
+**JSON cleanup** - Gemini sometimes wraps the JSON in markdown code fences (` ```json ``` `). There's a regex step that strips those out before parsing, to avoid `json.loads` failures.
 
-**Blocking calls in async context** — Gemini's SDK calls and audio file reads are synchronous. I wrapped them with `asyncio.to_thread()` so they don't block Pyrogram's event loop.
+**Blocking calls in async context** - Gemini's SDK calls and audio file reads are synchronous. I wrapped them with `asyncio.to_thread()` so they don't block Pyrogram's event loop.
 
-**Startup check** — The bot validates `TELEGRAM_API_ID` and `TELEGRAM_API_HASH` at startup and exits immediately with a clear message if they're missing or still set to placeholders.
+**Startup check** - The bot validates `TELEGRAM_API_ID` and `TELEGRAM_API_HASH` at startup and exits immediately with a clear message if they're missing or still set to placeholders.
 
 ---
 
 ## Limitations
 
 - Assignee is a name in the description, not an actual ClickUp user assignment
-- Only works in private chats — no group support
+- Only works in private chats - no group support
 - Voice files sent as audio documents (not voice notes) are not handled
-- No conversation history or stored task data — everything is stateless
+- No conversation history or stored task data - everything is stateless
 
 ---
 
@@ -179,4 +179,4 @@ Assignee: <Name of the person>
 
 ---
 
-**Submitted by:** Bhavy Modi — AI Automation Internship Assessment
+**Submitted by:** Bhavy Modi - AI Automation Internship Assessment
