@@ -22,7 +22,6 @@ There are three things this bot can handle:
 - **httpx** — async HTTP client for ClickUp API calls
 - **python-dotenv** — loads the `.env` config
 
-I used Pyrogram instead of `python-telegram-bot` because it uses MTProto directly which gives more control, and the media download API is cleaner. I chose Gemini because it supports sending raw audio bytes inline in the request — no separate file upload needed, which keeps the voice flow simple.
 
 ---
 
